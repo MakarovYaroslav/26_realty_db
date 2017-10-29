@@ -7,12 +7,12 @@
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
     <meta name="description" content="Недвижимость">
     <meta name="author" content="">
-    <link rel="icon" href="favicon.ico">
+    <link rel="icon" href="/static/favicon.ico">
 
     <title>Недвижимость</title>
 
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+    <link rel="stylesheet" href="/static/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" href="/static/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
 
   </head>
 
@@ -36,6 +36,7 @@
                   <p>город / районный центр</p>
                   <div class="form-group">
                     <select name="oblast_district" class="form-control">
+                      <option selected>{{ oblast_district }}</option>
                       <option value="Череповецкий район">Череповец</option>
                       <option value="Шекснинский район">Шексна</option>
                       <option value="Вологодский район">Вологда</option>
@@ -94,7 +95,7 @@
                   <div class="form-group ">
                     <div class="checkbox">
                       <label>
-                        <input type="checkbox" name="new_building" value="True">
+                        <input type="checkbox" name="new_building" value="True" {% if new_building %} checked {% endif %}>
                         только новостройки
                       </label>
                     </div>
@@ -103,14 +104,14 @@
                   <div class="form-group ">
                     <div class="input-group">
                       <span class="input-group-addon">от</span>
-                      <input autocomplete="off" type="text" value="" name="min_price" class="form-control js-price-format" placeholder="любая">
+                      <input autocomplete="off" type="text" value={{ min_price }} name="min_price" class="form-control js-price-format" placeholder="любая">
                       <span class="input-group-addon">р.</span>
                     </div>
                   </div>
                   <div class="form-group ">
                     <div class="input-group">
                       <span class="input-group-addon">до</span>
-                      <input autocomplete="off" type="text" value="" name="max_price" class="form-control js-price-format" placeholder="любая">
+                      <input autocomplete="off" type="text" value={{ max_price }} name="max_price" class="form-control js-price-format" placeholder="любая">
                       <span class="input-group-addon">р.</span>
                     </div>
                   </div>
@@ -120,48 +121,55 @@
             </div>
             <div class="col-sm-8">
               <div class="panel panel-default">
-                {% for ad in ads %}
-                  <div class="panel-body">
-                    <div class="row">
-                      <div class="col-sm-12">
-                        <div>
-                          <div class="row">
-                            <div class="col-sm-7">
-                              <p><strong>Продается {{ ad.rooms_number }}-комнатная квартира</strong></p>
-                            </div>
-                            <div class="col-sm-5">
-                              <p class="text-right"><strong class="nowrap">{{ ad.price }} р.</strong></p>
+                {% for ad in ads.items %}
+                  {% if ad.active %}
+                      <div class="panel-body">
+                        <div class="row">
+                          <div class="col-sm-12">
+                            <div>
+                              <div class="row">
+                                <div class="col-sm-7">
+                                  <p><strong>Продается {{ ad.rooms_number }}-комнатная квартира</strong></p>
+                                </div>
+                                <div class="col-sm-5">
+                                  <p class="text-right"><strong class="nowrap">{{ ad.price }} р.</strong></p>
+                                </div>
+                                <div class="col-sm-12">
+                                  {% if ad.under_construction %}
+                                    <p class="label label-warning">На стадии строительства</p>
+                                    <br>
+                                    <br>
+                                  {% endif %}
+                                </div>
+                              </div>
+                              <div class="row">
+                                <div class="col-sm-12">
+                                  <p>{{ ad.oblast_district }}, {{ ad.settlement }}, {{ ad.address }}</p>
+                                </div>
+                                <div class="col-sm-12">
+                                  <p>{{ ad.description }}</p>
+                                </div>
+                              </div>
                             </div>
                           </div>
-                          <div class="row">
-                            <div class="col-sm-12">
-                              <p>{{ ad.settlement }}, {{ ad.address }}</p>
-                            </div>
+                          <div class="col-sm-12">
+                            <p>
+                              <span class="label label-success">комнат: {{ ad.rooms_number }}</span>
+                              <span class="label label-primary">{{ ad.premise_area }} кв.м.</span>
+                              {% if ad.living_area %}
+                                <span class="label label-primary">жилая: {{ ad.living_area }} кв.м.</span>
+                              {% endif %}
+                              {% if ad.has_balcony %}
+                                <span class="label label-default">с балконом</span>
+                              {% endif %}
+                            </p>
                           </div>
                         </div>
                       </div>
-                      <div class="col-sm-12">
-                        <p>
-                          <span class="label label-success">комнат: {{ ad.rooms_number }}</span>
-                          <span class="label label-primary">{{ ad.premise_area }} кв.м.</span>
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                  <hr>
+                      <hr>
+                    {% endif %}
                 {% endfor %}
-                <div class="panel-body">
-                  <div class="clearfix">
-                    <ul class="pagination pull-right">
-                      <li class="disabled"><span>«</span></li>
-                      <li class="active"><span>1 <span class="sr-only">(current)</span></span></li>
-                      <li><a href="?page=2" role="next">2</a></li>
-                      <li><a href="?page=3" role="next">3</a></li>
-                      <li><a href="?page=4" role="next">4</a></li>
-                      <li><a href="?page=2" role="next">»</a></li>
-                    </ul>
-                  </div>
-                </div>
+                {{ pagination.links }}
               </div>
             </div>
           </div>
@@ -169,7 +177,7 @@
       </div>
     </div><!-- /.container -->
 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    <script src="/static/js/jquery.min.js"></script>
+    <script src="/static/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
   </body>
 </html>
