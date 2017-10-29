@@ -14,7 +14,8 @@ db.init_app(app)
 def ads_list():
     ads_per_page = 15
     default_page = 1
-    page = request.args.get(get_page_parameter(), type=int, default=default_page)
+    page = request.args.get(get_page_parameter(),
+                            type=int, default=default_page)
     oblast_district = request.args.get('oblast_district')
     new_building = request.args.get('new_building', False)
     min_price = request.args.get('min_price', 0)
@@ -25,25 +26,32 @@ def ads_list():
     current_year = datetime.today().year
     if oblast_district is not None and bool(new_building) is True:
         ads = Ads.query.filter(Ads.active == True,
-                               and_(Ads.price <= max_price, Ads.price >= min_price),
+                               and_(Ads.price <= max_price,
+                                    Ads.price >= min_price),
                                Ads.oblast_district == oblast_district,
-                               or_(Ads.under_construction == True, Ads.construction_year >= current_year-2)
+                               or_(Ads.under_construction == True,
+                                   Ads.construction_year >= current_year-2)
                                ).paginate(int(page), ads_per_page, False)
     elif oblast_district is None and bool(new_building) is True:
         ads = Ads.query.filter(Ads.active == True,
-                               and_(Ads.price <= max_price, Ads.price >= min_price),
-                               or_(Ads.under_construction == True, Ads.construction_year >= current_year - 2)
+                               and_(Ads.price <= max_price,
+                                    Ads.price >= min_price),
+                               or_(Ads.under_construction == True,
+                                   Ads.construction_year >= current_year - 2)
                                ).paginate(int(page), ads_per_page, False)
     elif oblast_district is not None and bool(new_building) is False:
         ads = Ads.query.filter(Ads.active == True,
-                               and_(Ads.price <= max_price, Ads.price >= min_price),
+                               and_(Ads.price <= max_price,
+                                    Ads.price >= min_price),
                                Ads.oblast_district == oblast_district
                                ).paginate(int(page), ads_per_page, False)
     else:
         ads = Ads.query.filter(Ads.active == True,
-                               and_(Ads.price <= max_price, Ads.price >= min_price)
+                               and_(Ads.price <= max_price,
+                                    Ads.price >= min_price)
                                ).paginate(int(page), ads_per_page, False)
-    pagination = Pagination(page=page, total=ads.total, per_page=ads_per_page, css_framework='bootstrap3')
+    pagination = Pagination(page=page, total=ads.total,
+                            per_page=ads_per_page, css_framework='bootstrap3')
     if oblast_district is None:
         oblast_district = "Череповецкий район"
     return render_template('ads_list.html', ads=ads,
@@ -54,3 +62,4 @@ def ads_list():
 
 if __name__ == "__main__":
     app.run()
+
