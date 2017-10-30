@@ -52,12 +52,10 @@ def ads_list():
                                ).paginate(int(page), ads_per_page, False)
     pagination = Pagination(page=page, total=ads.total,
                             per_page=ads_per_page, css_framework='bootstrap3')
-    if oblast_district is None:
-        oblast_district = "Череповецкий район"
     return render_template('ads_list.html', ads=ads,
                            pagination=pagination, min_price=min_price,
                            max_price=max_price, new_building=new_building,
-                           oblast_district=oblast_district)
+                           oblast_district=oblast_district if oblast_district is not None else "")
 
 
 if __name__ == "__main__":
