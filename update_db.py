@@ -48,6 +48,7 @@ def reset_active_fields_in_ads(ads):
 
 if __name__ == "__main__":
     with app.app_context():
+        db.create_all()
         reset_active_fields_in_ads(Ads.query.all())
         json_data = load_json_data('ads.json')
         insert_ads_to_db(json_data)
