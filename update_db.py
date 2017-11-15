@@ -2,6 +2,7 @@ import json
 from db import db, Ads
 from server import app
 import argparse
+from sqlalchemy import exc
 
 
 def insert_ads_to_db(json_data):
@@ -60,5 +61,5 @@ if __name__ == "__main__":
             reset_active_fields_in_ads(Ads.query.all())
             json_data = load_json_data(args.json)
             insert_ads_to_db(json_data)
-        except:
+        except exc.SQLAlchemyError:
             print("Ошибка при выгрузке данных!")
