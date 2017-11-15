@@ -44,9 +44,11 @@ def load_json_data(filepath):
     return json_data
 
 
-def reset_active_fields_in_ads(ads):
-    for ad in ads:
-        ad.active = False
+def reset_active_fields_in_old_ads(new_ads, old_ads):
+    new_ads_identifiers = [ad['id'] for ad in new_ads]
+    for ad in old_ads:
+        if ad.identifier not in new_ads_identifiers:
+            ad.active = False
     db.session.commit()
     return
 
@@ -58,8 +60,8 @@ if __name__ == "__main__":
     with app.app_context():
         db.create_all()
         try:
-            reset_active_fields_in_ads(Ads.query.all())
             json_data = load_json_data(args.json)
+            reset_active_fields_in_old_ads(json_data, Ads.query.all())
             insert_ads_to_db(json_data)
         except exc.SQLAlchemyError:
             print("Ошибка при выгрузке данных!")
