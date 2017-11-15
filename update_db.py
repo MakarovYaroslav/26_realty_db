@@ -1,6 +1,7 @@
 import json
 from db import db, Ads
 from server import app
+import argparse
 
 
 def insert_ads_to_db(json_data):
@@ -50,8 +51,11 @@ def reset_active_fields_in_ads(ads):
 
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument("json", help="Имя json файла")
+    args = parser.parse_args()
     with app.app_context():
         db.create_all()
         reset_active_fields_in_ads(Ads.query.all())
-        json_data = load_json_data('ads.json')
+        json_data = load_json_data(args.json)
         insert_ads_to_db(json_data)
