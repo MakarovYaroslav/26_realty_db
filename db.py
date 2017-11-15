@@ -4,7 +4,7 @@ db = SQLAlchemy()
 
 
 class Ads(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
+    identifier = db.Column(db.Integer, primary_key=True)
     settlement = db.Column(db.String(40))
     under_construction = db.Column(db.Boolean)
     description = db.Column(db.Text)
@@ -18,10 +18,10 @@ class Ads(db.Model):
     premise_area = db.Column(db.Float)
     active = db.Column(db.Boolean)
 
-    def __init__(self, id, settlement, under_construction, description, price,
+    def __init__(self, identifier, settlement, under_construction, description, price,
                  oblast_district, living_area, has_balcony, address,
                  construction_year, rooms_number, premise_area, active):
-        self.id = id
+        self.identifier = identifier
         self.settlement = settlement
         self.under_construction = under_construction
         self.description = description
